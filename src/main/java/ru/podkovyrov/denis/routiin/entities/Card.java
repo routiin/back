@@ -23,9 +23,12 @@ public class Card {
     private String description;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
-    private List<Value> values;
+    private List<Day> days;
 
-    @ManyToOne()
+    @ElementCollection(targetClass = String.class)
+    private List<String> names;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;

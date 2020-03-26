@@ -4,29 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table
 @Data
 public class Value {
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "NAME")
-    private String name;
 
     @Column(name = "PARAMETER")
     private int parameter;
 
-    @Column(name = "DATES")
-    @Temporal(TemporalType.DATE)
-    private Date doneDate;
-
     @ManyToOne()
-    @JoinColumn(name = "CARD_ID")
+    @JoinColumn(name = "DAY_ID")
     @JsonIgnore
-    private Card card;
+    private Day day;
 
 }
