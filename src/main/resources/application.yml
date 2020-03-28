@@ -57,3 +57,10 @@ app:
       - myiosapp://oauth2/redirect
 server:
   port: 5000
+#  ssl:
+#    key-alias: tomcat
+#    key-store: classpath:keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: 123456
+
+

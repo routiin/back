@@ -8,13 +8,13 @@ import ru.podkovyrov.denis.routiin.entities.Card;
 import ru.podkovyrov.denis.routiin.entities.Day;
 import ru.podkovyrov.denis.routiin.service.DayService;
 
-import javax.xml.crypto.Data;
-import java.util.Date;
-
 @RestController
 public class DayController {
-    @Autowired
-    DayService dayService;
+    private final DayService dayService;
+
+    public DayController(DayService dayService) {
+        this.dayService = dayService;
+    }
 
     @GetMapping("card/{id}/day/{date}")
     public Day getDay(@PathVariable(name = "id") Card card,

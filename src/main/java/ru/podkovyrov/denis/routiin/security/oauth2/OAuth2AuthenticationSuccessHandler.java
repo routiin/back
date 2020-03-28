@@ -55,9 +55,7 @@ public class OAuth2AuthenticationSuccessHandler
         }
 
         clearAuthenticationAttributes(request, response);
-        response.setStatus(200);
-        System.out.println(response.getStatus());
-        System.out.println(targetUrl);
+
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
