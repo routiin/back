@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.podkovyrov.denis.routiin.entities.AuthProvider;
+import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.OAuth2AuthenticationProcessingException;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
@@ -77,6 +78,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setLastName(oAuth2UserInfo.getLastName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        user.setStatus(Status.ACTIVE);
         return userRepository.save(user);
     }
 

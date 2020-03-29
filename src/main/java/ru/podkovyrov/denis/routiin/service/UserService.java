@@ -13,4 +13,5 @@ public interface UserService {
     Boolean existsByEmail(String email);
     User register(SignUpRequest signUpRequest);
 
+    void delete(User user);
 }

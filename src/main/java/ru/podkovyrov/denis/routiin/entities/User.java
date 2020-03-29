@@ -2,6 +2,7 @@ package ru.podkovyrov.denis.routiin.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -20,6 +21,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
+    private Status status;
+
     @Column(name = "LOGIN", nullable = true)
     private String login;
 
@@ -29,6 +34,7 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
 
+    @Column(name = "IMAGE_URL")
     private String imageUrl;
 
     @JsonIgnore
@@ -44,7 +50,7 @@ public class User {
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "CARDS")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Card> cards;
+
 }

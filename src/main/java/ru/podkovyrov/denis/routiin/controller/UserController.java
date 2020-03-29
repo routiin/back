@@ -2,9 +2,7 @@ package ru.podkovyrov.denis.routiin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
@@ -17,10 +15,11 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    UserRepository userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
