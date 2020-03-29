@@ -25,7 +25,7 @@ public class User {
     @Column(name = "STATUS")
     private Status status;
 
-    @Column(name = "LOGIN", nullable = true)
+    @Column(name = "LOGIN", unique = true)
     private String login;
 
     @Column(name = "FIRST_NAME")

@@ -31,7 +31,9 @@ public class AuthController {
     private final UserService userService;
     private final TokenProvider tokenProvider;
 
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, TokenProvider tokenProvider) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          UserService userService,
+                          TokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.tokenProvider = tokenProvider;
@@ -43,7 +45,7 @@ public class AuthController {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getLogin(),
                         loginRequest.getPassword()
                 )
         );

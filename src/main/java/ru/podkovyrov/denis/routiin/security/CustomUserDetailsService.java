@@ -13,18 +13,24 @@ import ru.podkovyrov.denis.routiin.repository.UserRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
+
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if(user==null){
+            user = userRepository.findByLogin(email).orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : "
-                                + email)
-                );
+                                + email));
+        }
 
         return UserPrincipal.create(user);
     }
