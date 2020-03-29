@@ -35,6 +35,8 @@ import ru.podkovyrov.denis.routiin.service.UserService;
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String SWAGGER_UI_PATH = "/swagger-ui.html";
+
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
@@ -112,6 +114,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js")
+                .permitAll()
+                .antMatchers("/**",
+                        SWAGGER_UI_PATH + "/**",
+                        "/v2/api-docs/**",
+                        "/webjars/springfox-swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/dist/**",
+                        "/public/**")
                 .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()
