@@ -1,6 +1,5 @@
 package ru.podkovyrov.denis.routiin.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +7,6 @@ import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
 import ru.podkovyrov.denis.routiin.payloads.ChangePasswordRequest;
-import ru.podkovyrov.denis.routiin.payloads.LoginRequest;
-import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
 import ru.podkovyrov.denis.routiin.service.UserService;
@@ -30,7 +27,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         return userService.findById(userPrincipal.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+                .orElseThrow(()
+                        -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
 
     @GetMapping("/users")
