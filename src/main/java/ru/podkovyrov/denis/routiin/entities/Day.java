@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -16,16 +17,15 @@ public class Day {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "DATE")
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    @Column(name = "date")
+    private Timestamp date;
 
-    @Column(name = "VALUE")
+    @Column(name = "value")
     @ElementCollection(targetClass = Integer.class)
     private List<Integer> values;
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "CADR_ID")
+    @JoinColumn(name = "card_id")
     private Card card;
 }

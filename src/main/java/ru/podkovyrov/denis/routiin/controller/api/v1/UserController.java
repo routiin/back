@@ -1,4 +1,4 @@
-package ru.podkovyrov.denis.routiin.controller;
+package ru.podkovyrov.denis.routiin.controller.api.v1;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +14,10 @@ import ru.podkovyrov.denis.routiin.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.podkovyrov.denis.routiin.controller.api.v1.ControllerConstants.API_VERSION;
+
 @RestController
+@RequestMapping(API_VERSION)
 public class UserController {
 
     private final UserService userService;

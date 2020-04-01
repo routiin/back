@@ -10,27 +10,21 @@ import java.util.List;
 @Table
 @Data
 public class Card {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
-
-    @Column(name = "TITLE")
-    private String title;
-
-    @Column(name = "DESCRIPTION")
-    private String description;
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Day> days;
-
-    @ElementCollection(targetClass = String.class)
-    private List<String> names;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "card_template_id")
+    private CardTemplate cardTemplate;
 }

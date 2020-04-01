@@ -90,6 +90,8 @@ public class OAuth2AuthenticationSuccessHandler
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
 
+        System.out.println(uri);
+
         return appProperties.getOauth2().getAuthorizedRedirectUris()
                 .stream()
                 .anyMatch(authorizedRedirectUri -> {
