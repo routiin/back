@@ -1,11 +1,10 @@
 package ru.podkovyrov.denis.routiin.entities;
 
-import lombok.Cleanup;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.lang.annotation.Target;
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -27,15 +26,15 @@ public class CardTemplate {
     private Status status;
 
     @Column(name = "created_date")
-    private Timestamp createdDate;
-
-    @ElementCollection(targetClass = String.class)
-    private List<String> tasks;
-
-    @ElementCollection(targetClass = String.class)
-    private List<String> startValue;
+    private ZonedDateTime createdDate;
 
     @OneToMany(mappedBy = "cardTemplate", cascade = CascadeType.ALL)
     private List<Card> cards;
+
+//    @ElementCollection(targetClass = String.class)
+//    private List<String> tasks;
+//
+//    @ElementCollection(targetClass = String.class)
+//    private List<String> startValue;
 }
 

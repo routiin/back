@@ -53,4 +53,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Card> cards;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Day> days;
+
 }

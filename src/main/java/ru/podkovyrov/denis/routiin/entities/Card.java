@@ -2,8 +2,10 @@ package ru.podkovyrov.denis.routiin.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import ru.podkovyrov.denis.routiin.security.CurrentUser;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -17,6 +19,9 @@ public class Card {
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Day> days;
+
+    @Column(name = "start_date")
+    private ZonedDateTime startDate;
 
     @ManyToOne
     @JsonIgnore

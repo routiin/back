@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -18,11 +20,15 @@ public class Day {
     private Long id;
 
     @Column(name = "date")
-    private Timestamp date;
+    private ZonedDateTime date;
 
-    @Column(name = "value")
-    @ElementCollection(targetClass = Integer.class)
-    private List<Integer> values;
+    @Column(name = "fact")
+    private String fact;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JsonIgnore
