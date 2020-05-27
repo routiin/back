@@ -37,6 +37,9 @@ public class User {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "score")
+    private Long score;
+
     @JsonIgnore
     private String password;
 

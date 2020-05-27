@@ -47,6 +47,10 @@ public class DayServiceImpl implements DayService {
         List<CardResponse> responses = new ArrayList<>();
         for (Card card : cards) {
             if(card.getStartDate().isBefore(ZonedDateTime.parse(from).plusDays(1))) {
+
+                if (card.getEndDate()!=null &&
+                        card.getEndDate().isBefore(ZonedDateTime.parse(from))) continue;
+
                 CardResponse cardResponse = new CardResponse();
                 cardResponse.setId(card.getId());
                 cardResponse.setTitle(card.getCardTemplate().getTitle());
@@ -60,9 +64,6 @@ public class DayServiceImpl implements DayService {
                 responses.add(cardResponse);
             }
         }
-        responses.forEach((cardResponse -> {
-            System.out.println(cardResponse.getId());
-        }));
         return responses;
     }
 

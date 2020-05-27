@@ -2,13 +2,13 @@ package ru.podkovyrov.denis.routiin.controller.api.v1;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import ru.podkovyrov.denis.routiin.entities.Card;
 import ru.podkovyrov.denis.routiin.entities.CardTemplate;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
+import ru.podkovyrov.denis.routiin.payloads.CardRequest;
 import ru.podkovyrov.denis.routiin.payloads.CardResponse;
 import ru.podkovyrov.denis.routiin.payloads.DayInterval;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
@@ -19,7 +19,6 @@ import ru.podkovyrov.denis.routiin.service.CardTemplateService;
 import ru.podkovyrov.denis.routiin.service.DayService;
 import ru.podkovyrov.denis.routiin.service.UserService;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 import static ru.podkovyrov.denis.routiin.controller.api.v1.ControllerConstants.API_VERSION;
@@ -79,9 +78,19 @@ public class CardController {
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, "You already have this card"));
         }
-
-
     }
 
+    @PostMapping("user/me/create/card")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createNewCard(@CurrentUser UserPrincipal userPrincipal,
+                                           @RequestBody CardRequest cardRequest) {
+        User user = userRepository.findById(userPrincipal.getId()).get();
+        CardTemplate newCardTemplate = new CardTemplate();
+        newCardTemplate.setTitle(cardRequest.getTitle());
+        newCardTemplate.setDescription(cardRequest.getDescription());
+        cardTemplateService.save(newCardTemplate);
 
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true, "You create a card"));
+    }
 }

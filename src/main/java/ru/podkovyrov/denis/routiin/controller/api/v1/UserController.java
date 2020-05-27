@@ -7,6 +7,7 @@ import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
 import ru.podkovyrov.denis.routiin.payloads.ChangePasswordRequest;
+import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
 import ru.podkovyrov.denis.routiin.service.UserService;
@@ -28,10 +29,11 @@ public class UserController {
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
-    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-        return userService.findById(userPrincipal.getId())
+    public UserMeResponse getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+        User user =  userService.findById(userPrincipal.getId())
                 .orElseThrow(()
                         -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
+        return new UserMeResponse(user);
     }
 
     @GetMapping("/users")

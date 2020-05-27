@@ -23,6 +23,9 @@ public class Card {
     @Column(name = "start_date")
     private ZonedDateTime startDate;
 
+    @Column(name = "end_date")
+    private ZonedDateTime endDate;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")

@@ -3,11 +3,13 @@ package ru.podkovyrov.denis.routiin.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.podkovyrov.denis.routiin.entities.CardTemplate;
+import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.payloads.CardResponse;
 import ru.podkovyrov.denis.routiin.repository.CardRepository;
 import ru.podkovyrov.denis.routiin.repository.CardTemplateRepository;
 import ru.podkovyrov.denis.routiin.service.CardTemplateService;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +35,18 @@ public class CardTemplateServiceImpl implements CardTemplateService {
         for (CardTemplate template : templates) {
             CardResponse card = new CardResponse();
             card.setTitle(template.getTitle());
-            card.setDescription(template.getTitle());
+            card.setDescription(template.getDescription());
             card.setCountOfUsers(cardRepository.countByCardTemplate(template));
             card.setId(template.getId());
             responses.add(card);
         }
         return responses;
+    }
+
+    @Override
+    public void save(CardTemplate newCardTemplate) {
+        newCardTemplate.setCreatedDate(ZonedDateTime.now());
+        newCardTemplate.setStatus(Status.ACTIVE);
+        cardTemplateRepository.save(newCardTemplate);
     }
 }

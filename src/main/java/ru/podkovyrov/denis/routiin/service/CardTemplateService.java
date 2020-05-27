@@ -9,4 +9,5 @@ public interface CardTemplateService {
     CardTemplate getById(Long id);
 
     List<CardResponse> findAll();
+    void save(CardTemplate newCardTemplate);
 }
