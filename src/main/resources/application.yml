@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/routiin2?serverTimezone=UTC
-    username: root
+    username: axe
     password: root
 
   jpa:
