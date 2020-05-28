@@ -90,6 +90,8 @@ public class CardController {
         newCardTemplate.setDescription(cardRequest.getDescription());
         cardTemplateService.save(newCardTemplate);
 
+        cardService.addCardToUser(newCardTemplate, user);
+
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "You create a card"));
     }
