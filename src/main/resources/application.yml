@@ -19,14 +19,14 @@ spring:
           google:
             clientId: 959393536932-7f4iom34782qbscqdupa19hm9c9p7m5n.apps.googleusercontent.com
             clientSecret: -f1-ZGY_fNgE0wy0txq4DVHd
-            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            redirectUri: "https://api.routiin.ru/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
             clientId: 2763808100499871
             clientSecret: d52d052e58e6a9d276a8c1b38882d89b
-            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            redirectUri: "https://api.routiin.ru/oauth2/callback/{registrationId}"
             scope:
               - email
               - public_profile
