@@ -17,12 +17,10 @@ import java.util.List;
 @Service
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
-    private final CardTemplateRepository cardTemplateRepository;
 
     @Autowired
-    public CardServiceImpl(CardRepository cardRepository, CardTemplateRepository cardTemplateRepository) {
+    public CardServiceImpl(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
-        this.cardTemplateRepository = cardTemplateRepository;
     }
 
     @Override
@@ -41,8 +39,6 @@ public class CardServiceImpl implements CardService {
 
         List<CardResponse> responses = new ArrayList<>();
         for(Card card : cards) {
-            System.out.println("TEST");
-            System.out.println(card.getId());
             CardResponse cardResponse = new CardResponse();
             cardResponse.setCountOfUsers(cardRepository
                     .countByCardTemplate(card.getCardTemplate()));

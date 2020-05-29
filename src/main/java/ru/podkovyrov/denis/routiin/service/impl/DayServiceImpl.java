@@ -22,20 +22,16 @@ import java.util.List;
 public class DayServiceImpl implements DayService {
     private final DayRepository dayRepository;
     private final CardRepository cardRepository;
-    private final CardTemplateRepository cardTemplateRepository;
 
     public DayServiceImpl(DayRepository dayRepository, CardRepository cardRepository, CardTemplateRepository cardTemplateRepository) {
         this.dayRepository = dayRepository;
         this.cardRepository = cardRepository;
-        this.cardTemplateRepository = cardTemplateRepository;
     }
 
 
     @Override
     public Day findByDay(String date) {
        List<Day> test = dayRepository.findAll();
-        System.out.println(test.get(0).getDate());
-        System.out.println(ZonedDateTime.now(ZoneOffset.UTC));
         return new Day();
     }
 

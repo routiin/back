@@ -22,7 +22,7 @@ public class DayController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("user/me/card/{id}")
+    @PostMapping("user/me/card/{id}/check")
     @PreAuthorize("hasRole('USER')")
     public void setDay(@CurrentUser UserPrincipal userPrincipal,
                        @PathVariable(name = "id") Card card,

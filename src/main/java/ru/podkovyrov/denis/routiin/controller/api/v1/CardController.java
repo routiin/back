@@ -7,17 +7,11 @@ import ru.podkovyrov.denis.routiin.entities.Card;
 import ru.podkovyrov.denis.routiin.entities.CardTemplate;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
-import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
-import ru.podkovyrov.denis.routiin.payloads.CardRequest;
-import ru.podkovyrov.denis.routiin.payloads.CardResponse;
-import ru.podkovyrov.denis.routiin.payloads.DayInterval;
+import ru.podkovyrov.denis.routiin.payloads.*;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
-import ru.podkovyrov.denis.routiin.service.CardService;
-import ru.podkovyrov.denis.routiin.service.CardTemplateService;
-import ru.podkovyrov.denis.routiin.service.DayService;
-import ru.podkovyrov.denis.routiin.service.UserService;
+import ru.podkovyrov.denis.routiin.service.*;
 
 import java.util.List;
 
@@ -32,27 +26,24 @@ public class CardController {
     private final CardTemplateService cardTemplateService;
     private final DayService dayService;
     private final UserRepository userRepository;
+    private final ScoreService scoreService;
 
-    public CardController(CardService cardService, UserService userService, CardTemplateService cardTemplateService, DayService dayService, UserRepository userRepository) {
+    public CardController(CardService cardService, UserService userService, CardTemplateService cardTemplateService, DayService dayService, UserRepository userRepository, ScoreService scoreService) {
         this.cardService = cardService;
         this.userService = userService;
         this.cardTemplateService = cardTemplateService;
         this.dayService = dayService;
         this.userRepository = userRepository;
-    }
-
-    @GetMapping("cards")
-    public List<CardResponse> getAllCard(){
-        return cardTemplateService.findAll();
+        this.scoreService = scoreService;
     }
 
     @GetMapping("user/{id}/card")
-    public List<Card> getUsersCard(@PathVariable(name = "id") User user){
+    public List<Card> getUsersCardById(@PathVariable(name = "id") User user){
         // Возвращать CardResponse
         return cardService.findAllUserCards(user);
     }
 
-    @PostMapping("user/me/cards")
+    @PostMapping("user/me/cards/from/interval")
     @PreAuthorize("hasRole('USER')")
     public List<CardResponse> getMeCardsFromInterval(@CurrentUser UserPrincipal userPrincipal,
                                                  @RequestBody DayInterval interval){
@@ -65,18 +56,21 @@ public class CardController {
         return dayService.findAllByUserAndDateBetween(user, interval.getFrom(), interval.getTo());
     }
 
-    @PostMapping("user/me/cardTemplate/{id}")
+    @PostMapping("user/me/add/cardTemplate/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addMeCardTemplate(@CurrentUser UserPrincipal userPrincipal,
+    public ResponseEntity<?> addCardTemplateToMeUser(@CurrentUser UserPrincipal userPrincipal,
                                                @PathVariable(name = "id") CardTemplate cardTemplate){
         User user = userService.findById(userPrincipal.getId()).get();
+
+        scoreService.addScoreForCreateCard(user.getId());
+
         boolean res = cardService.addCardToUser(cardTemplate, user);
         if(res) {
             return ResponseEntity.ok()
                     .body(new ApiResponse(true, "You add card"));
         }else {
             return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "You already have this card"));
+                    .body(new ApiError("You already have this card"));
         }
     }
 
@@ -88,7 +82,10 @@ public class CardController {
         CardTemplate newCardTemplate = new CardTemplate();
         newCardTemplate.setTitle(cardRequest.getTitle());
         newCardTemplate.setDescription(cardRequest.getDescription());
+
         cardTemplateService.save(newCardTemplate);
+        cardService.addCardToUser(newCardTemplate, user);
+        scoreService.addScoreForCreateCard(user.getId());
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "You create a card"));
