@@ -11,10 +11,7 @@ import ru.podkovyrov.denis.routiin.payloads.*;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
-import ru.podkovyrov.denis.routiin.service.CardService;
-import ru.podkovyrov.denis.routiin.service.CardTemplateService;
-import ru.podkovyrov.denis.routiin.service.DayService;
-import ru.podkovyrov.denis.routiin.service.UserService;
+import ru.podkovyrov.denis.routiin.service.*;
 
 import java.util.List;
 
@@ -29,13 +26,15 @@ public class CardController {
     private final CardTemplateService cardTemplateService;
     private final DayService dayService;
     private final UserRepository userRepository;
+    private final ScoreService scoreService;
 
-    public CardController(CardService cardService, UserService userService, CardTemplateService cardTemplateService, DayService dayService, UserRepository userRepository) {
+    public CardController(CardService cardService, UserService userService, CardTemplateService cardTemplateService, DayService dayService, UserRepository userRepository, ScoreService scoreService) {
         this.cardService = cardService;
         this.userService = userService;
         this.cardTemplateService = cardTemplateService;
         this.dayService = dayService;
         this.userRepository = userRepository;
+        this.scoreService = scoreService;
     }
 
     @GetMapping("user/{id}/card")
@@ -62,6 +61,9 @@ public class CardController {
     public ResponseEntity<?> addCardTemplateToMeUser(@CurrentUser UserPrincipal userPrincipal,
                                                @PathVariable(name = "id") CardTemplate cardTemplate){
         User user = userService.findById(userPrincipal.getId()).get();
+
+        scoreService.addScoreForCreateCard(user.getId());
+
         boolean res = cardService.addCardToUser(cardTemplate, user);
         if(res) {
             return ResponseEntity.ok()
@@ -80,9 +82,10 @@ public class CardController {
         CardTemplate newCardTemplate = new CardTemplate();
         newCardTemplate.setTitle(cardRequest.getTitle());
         newCardTemplate.setDescription(cardRequest.getDescription());
-        cardTemplateService.save(newCardTemplate);
 
+        cardTemplateService.save(newCardTemplate);
         cardService.addCardToUser(newCardTemplate, user);
+        scoreService.addScoreForCreateCard(user.getId());
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "You create a card"));
