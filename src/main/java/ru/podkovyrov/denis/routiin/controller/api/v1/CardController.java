@@ -7,10 +7,7 @@ import ru.podkovyrov.denis.routiin.entities.Card;
 import ru.podkovyrov.denis.routiin.entities.CardTemplate;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
-import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
-import ru.podkovyrov.denis.routiin.payloads.CardRequest;
-import ru.podkovyrov.denis.routiin.payloads.CardResponse;
-import ru.podkovyrov.denis.routiin.payloads.DayInterval;
+import ru.podkovyrov.denis.routiin.payloads.*;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
@@ -41,18 +38,13 @@ public class CardController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("cards")
-    public List<CardResponse> getAllCard(){
-        return cardTemplateService.findAll();
-    }
-
     @GetMapping("user/{id}/card")
-    public List<Card> getUsersCard(@PathVariable(name = "id") User user){
+    public List<Card> getUsersCardById(@PathVariable(name = "id") User user){
         // Возвращать CardResponse
         return cardService.findAllUserCards(user);
     }
 
-    @PostMapping("user/me/cards")
+    @PostMapping("user/me/cards/from/interval")
     @PreAuthorize("hasRole('USER')")
     public List<CardResponse> getMeCardsFromInterval(@CurrentUser UserPrincipal userPrincipal,
                                                  @RequestBody DayInterval interval){
@@ -65,9 +57,9 @@ public class CardController {
         return dayService.findAllByUserAndDateBetween(user, interval.getFrom(), interval.getTo());
     }
 
-    @PostMapping("user/me/cardTemplate/{id}")
+    @PostMapping("user/me/add/cardTemplate/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> addMeCardTemplate(@CurrentUser UserPrincipal userPrincipal,
+    public ResponseEntity<?> addCardTemplateToMeUser(@CurrentUser UserPrincipal userPrincipal,
                                                @PathVariable(name = "id") CardTemplate cardTemplate){
         User user = userService.findById(userPrincipal.getId()).get();
         boolean res = cardService.addCardToUser(cardTemplate, user);
@@ -76,7 +68,7 @@ public class CardController {
                     .body(new ApiResponse(true, "You add card"));
         }else {
             return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "You already have this card"));
+                    .body(new ApiError("You already have this card"));
         }
     }
 
