@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/routiin2?serverTimezone=UTC
-    username: axe
-    password: root
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
 
   jpa:
-    show-sql: true
+    show-sql: ${SHOW_SQL}
     hibernate:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
@@ -17,15 +17,15 @@ spring:
       client:
         registration:
           google:
-            clientId: 959393536932-7f4iom34782qbscqdupa19hm9c9p7m5n.apps.googleusercontent.com
-            clientSecret: -f1-ZGY_fNgE0wy0txq4DVHd
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
             redirectUri: "https://api.routiin.ru/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
-            clientId: 2763808100499871
-            clientSecret: d52d052e58e6a9d276a8c1b38882d89b
+            clientId: ${FB_CLIENT_ID}
+            clientSecret: ${FB_CLIENT_SECRET}
             redirectUri: "https://api.routiin.ru/oauth2/callback/{registrationId}"
             scope:
               - email
@@ -37,7 +37,7 @@ spring:
             userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
 app:
   auth:
-    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenSecret: ${TOKEN_SECRET}
     tokenExpirationMsec: 864000000
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,
@@ -49,11 +49,7 @@ app:
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect
 server:
-  port: 5000
-#  ssl:
-#    key-alias: tomcat
-#    key-store: classpath:keystore.p12
-#    key-store-type: PKCS12
-#    key-store-password: 123456
+  port: ${SERVER_PORT}
+
 
 
