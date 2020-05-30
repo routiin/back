@@ -2,11 +2,13 @@ package ru.podkovyrov.denis.routiin.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.service.ScoreService;
 
+@Service
 public class ScoreServiceImpl implements ScoreService {
     private final UserRepository userRepository;
 
