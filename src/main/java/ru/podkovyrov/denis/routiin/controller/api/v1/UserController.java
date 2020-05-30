@@ -49,15 +49,4 @@ public class UserController {
     }
 
 
-    @PostMapping("/user/me/password")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> setPassword(@CurrentUser UserPrincipal userPrincipal,
-                                         @Valid @RequestBody ChangePasswordRequest ChangePasswordRequest){
-        User user = userService.findById(userPrincipal.getId()).orElse(null);
-        if(user==null) {
-            return ResponseEntity.ok(new ApiResponse(false, "user not found"));
-        }
-        userService.changePassword(user, ChangePasswordRequest.getPassword());
-        return ResponseEntity.ok(new ApiResponse(true, "password was changed"));
-    }
 }

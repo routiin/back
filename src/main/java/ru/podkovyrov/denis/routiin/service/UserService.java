@@ -11,8 +11,6 @@ public interface UserService {
     Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
     Boolean existsByEmail(String email);
-    User register(SignUpRequest signUpRequest);
-    User changePassword(User user, String password);
     User save(User user);
 
     void delete(User user);

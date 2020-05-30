@@ -17,12 +17,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,29 +42,6 @@ public class UserServiceImpl implements UserService {
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
-
-    @Override
-    public User register(SignUpRequest signUpRequest) {
-        User user = new User();
-        user.setFirstName(signUpRequest.getFirstName());
-        user.setLastName(signUpRequest.getLastName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setLogin(signUpRequest.getLogin());
-        user.setPassword(signUpRequest.getPassword());
-        user.setProvider(AuthProvider.local);
-        user.setStatus(Status.ACTIVE);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User changePassword(User user, String password) {
-        user.setPassword(passwordEncoder.encode(password));
-        return userRepository.save(user);
-    }
-
 
     @Override
     public User save(User user) {
