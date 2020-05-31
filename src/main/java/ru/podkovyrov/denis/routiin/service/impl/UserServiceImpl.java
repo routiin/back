@@ -1,12 +1,12 @@
 package ru.podkovyrov.denis.routiin.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.podkovyrov.denis.routiin.entities.AuthProvider;
 import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.entities.User;
-import ru.podkovyrov.denis.routiin.payloads.SignUpRequest;
+import ru.podkovyrov.denis.routiin.exception.BadRequestException;
+import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
+import ru.podkovyrov.denis.routiin.payloads.UserPostRequest;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.service.UserService;
 
@@ -52,6 +52,33 @@ public class UserServiceImpl implements UserService {
     public void delete(User user) {
         user.setStatus(Status.DELETED);
         userRepository.save(user);
+    }
+
+    @Override
+    public UserMeResponse updateUserInfo(User user, UserPostRequest newInfo) {
+        String newLogin = newInfo.getLogin();
+        String newFirstName = newInfo.getFirstName();
+        String newLastName = newInfo.getLastName();
+
+        if (newLogin != null) {
+            User checkLogin = userRepository.findByLogin(newLogin).orElse(null);
+            if (checkLogin == null) {
+                user.setLogin(newInfo.getLogin());
+            }else{
+                throw new BadRequestException("login " + newLogin + " already used");
+            }
+        }
+
+        if (newFirstName != null) {
+            user.setFirstName(newFirstName);
+        }
+
+        if (newLastName != null) {
+            user.setLastName(newLastName);
+        }
+
+        userRepository.save(user);
+        return new UserMeResponse(userRepository.findById(user.getId()).get());
     }
 
 }

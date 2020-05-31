@@ -2,6 +2,8 @@ package ru.podkovyrov.denis.routiin.service;
 
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.payloads.SignUpRequest;
+import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
+import ru.podkovyrov.denis.routiin.payloads.UserPostRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +17,5 @@ public interface UserService {
 
     void delete(User user);
 
+    UserMeResponse updateUserInfo(User user, UserPostRequest newInfo);
 }
