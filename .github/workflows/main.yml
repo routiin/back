@@ -20,8 +20,21 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        character set server: 'utf8'
+        collation server: 'utf8_general_ci'
+        mysql database: 'routiin2'
+        mysql root password: ${{ secrets.MYSQL_PASSWORD }}
+        mysql user: ${secrets.MYSQL_USER} 
+        mysql password: ${{ secrets.MYSQL_USER }}      
     - name: Build with Maven
-      run: mvn package -Dmaven.test.skip=true -DFB_CLIENT_SECRET=${{ secrets.FB_CLIENT_SECRET }} -DFB_CLIENT_ID=${{ secrets.FB_CLIENT_ID }} -DGOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} -DGOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} -DMYSQL_URL=${{ secrets.MYSQL_URL }} -DMYSQL_USER=${{ secrets.MYSQL_USER }} -DMYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} -DSHOW_SQL=${{ secrets.SHOW_SQL_PROD }} -DSERVER_PORT=${{ secrets.SERVER_PORT_PROD }} -DTOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
+      run: mvn package -DFB_CLIENT_SECRET=${{ secrets.FB_CLIENT_SECRET }} -DFB_CLIENT_ID=${{ secrets.FB_CLIENT_ID }} -DGOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} -DGOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} -DMYSQL_URL=${{ secrets.MYSQL_URL }} -DMYSQL_USER=${{ secrets.MYSQL_USER }} -DMYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} -DSHOW_SQL=${{ secrets.SHOW_SQL_PROD }} -DSERVER_PORT=${{ secrets.SERVER_PORT_PROD }} -DTOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.7
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@v2.1.1
       env:
@@ -38,9 +51,6 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
-    - name: Codecov
-      uses: codecov/codecov-action@v1.0.7
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+    
   
   
