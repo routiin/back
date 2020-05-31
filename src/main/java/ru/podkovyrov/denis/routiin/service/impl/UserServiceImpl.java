@@ -60,13 +60,10 @@ public class UserServiceImpl implements UserService {
         String newFirstName = newInfo.getFirstName();
         String newLastName = newInfo.getLastName();
 
-        if (newLogin != null) {
-            User checkLogin = userRepository.findByLogin(newLogin).orElse(null);
-            if (checkLogin == null) {
-                user.setLogin(newInfo.getLogin());
-            }else{
-                throw new BadRequestException("login " + newLogin + " already used");
-            }
+        if (newLogin != null && !userRepository.existsByLogin(newLogin)) {
+            user.setLogin(newInfo.getLogin());
+        } else  {
+            throw new BadRequestException("login " + newLogin + " already used");
         }
 
         if (newFirstName != null) {

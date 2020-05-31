@@ -2,6 +2,7 @@ package ru.podkovyrov.denis.routiin.controller.api.v1;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
 import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
@@ -38,11 +39,14 @@ public class UserController {
         return userService.findAll();
     }
 
-
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable(name = "id") Long id){
-        return userService.findById(id).orElseThrow(() ->
+    public UserMeResponse getUser(@PathVariable(name = "id") Long id){
+        User user = userService.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "id", id));
+        if (user.getStatus() == Status.DELETED) {
+            throw new ResourceNotFoundException("User", "id", user.getId());
+        }
+        return new UserMeResponse(user);
     }
 
     @PostMapping("/user/me")
