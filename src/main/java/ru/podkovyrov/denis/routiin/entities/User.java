@@ -40,9 +40,6 @@ public class User {
     @Column(name = "score")
     private Long score;
 
-    @JsonIgnore
-    private String password;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;

@@ -1,12 +1,12 @@
 package ru.podkovyrov.denis.routiin.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.podkovyrov.denis.routiin.entities.AuthProvider;
 import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.entities.User;
-import ru.podkovyrov.denis.routiin.payloads.SignUpRequest;
+import ru.podkovyrov.denis.routiin.exception.BadRequestException;
+import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
+import ru.podkovyrov.denis.routiin.payloads.UserPostRequest;
 import ru.podkovyrov.denis.routiin.repository.UserRepository;
 import ru.podkovyrov.denis.routiin.service.UserService;
 
@@ -17,12 +17,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,29 +44,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(SignUpRequest signUpRequest) {
-        User user = new User();
-        user.setFirstName(signUpRequest.getFirstName());
-        user.setLastName(signUpRequest.getLastName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setLogin(signUpRequest.getLogin());
-        user.setPassword(signUpRequest.getPassword());
-        user.setProvider(AuthProvider.local);
-        user.setStatus(Status.ACTIVE);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User changePassword(User user, String password) {
-        user.setPassword(passwordEncoder.encode(password));
-        return userRepository.save(user);
-    }
-
-
-    @Override
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -77,6 +52,30 @@ public class UserServiceImpl implements UserService {
     public void delete(User user) {
         user.setStatus(Status.DELETED);
         userRepository.save(user);
+    }
+
+    @Override
+    public UserMeResponse updateUserInfo(User user, UserPostRequest newInfo) {
+        String newLogin = newInfo.getLogin();
+        String newFirstName = newInfo.getFirstName();
+        String newLastName = newInfo.getLastName();
+
+        if (newLogin != null && !userRepository.existsByLogin(newLogin)) {
+            user.setLogin(newInfo.getLogin());
+        } else  {
+            throw new BadRequestException("login " + newLogin + " already used");
+        }
+
+        if (newFirstName != null) {
+            user.setFirstName(newFirstName);
+        }
+
+        if (newLastName != null) {
+            user.setLastName(newLastName);
+        }
+
+        userRepository.save(user);
+        return new UserMeResponse(userRepository.findById(user.getId()).get());
     }
 
 }

@@ -1,18 +1,17 @@
 package ru.podkovyrov.denis.routiin.controller.api.v1;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.podkovyrov.denis.routiin.entities.Status;
 import ru.podkovyrov.denis.routiin.entities.User;
 import ru.podkovyrov.denis.routiin.exception.ResourceNotFoundException;
-import ru.podkovyrov.denis.routiin.payloads.ApiResponse;
-import ru.podkovyrov.denis.routiin.payloads.ChangePasswordRequest;
 import ru.podkovyrov.denis.routiin.payloads.UserMeResponse;
+import ru.podkovyrov.denis.routiin.payloads.UserPostRequest;
 import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
 import ru.podkovyrov.denis.routiin.service.UserService;
 
-import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.podkovyrov.denis.routiin.controller.api.v1.ControllerConstants.API_VERSION;
@@ -37,27 +36,31 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userService.findAll();
+    public List<UserMeResponse> getAllUsers(){
+        List<UserMeResponse> users = new ArrayList<>();
+        for (User user : userService.findAll()) {
+            users.add(new UserMeResponse(user));
+        }
+        return users;
     }
-
 
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable(name = "id") Long id){
-        return userService.findById(id).orElseThrow(() ->
+    public UserMeResponse getUser(@PathVariable(name = "id") Long id){
+        User user = userService.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("User", "id", id));
-    }
-
-
-    @PostMapping("/user/me/password")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> setPassword(@CurrentUser UserPrincipal userPrincipal,
-                                         @Valid @RequestBody ChangePasswordRequest ChangePasswordRequest){
-        User user = userService.findById(userPrincipal.getId()).orElse(null);
-        if(user==null) {
-            return ResponseEntity.ok(new ApiResponse(false, "user not found"));
+        if (user.getStatus() == Status.DELETED) {
+            throw new ResourceNotFoundException("User", "id", user.getId());
         }
-        userService.changePassword(user, ChangePasswordRequest.getPassword());
-        return ResponseEntity.ok(new ApiResponse(true, "password was changed"));
+        return new UserMeResponse(user);
     }
+
+    @PostMapping("/user/me")
+    @PreAuthorize("hasRole('USER')")
+    public UserMeResponse updateUserInfo(@CurrentUser UserPrincipal userPrincipal,
+                                         @RequestBody UserPostRequest newInfo){
+        User user = userService.findById(userPrincipal.getId()).get();
+        System.out.println(user.getFirstName());
+        return userService.updateUserInfo(user, newInfo);
+    }
+
 }
