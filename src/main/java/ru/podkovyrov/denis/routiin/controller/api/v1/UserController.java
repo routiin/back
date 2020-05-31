@@ -11,6 +11,7 @@ import ru.podkovyrov.denis.routiin.security.CurrentUser;
 import ru.podkovyrov.denis.routiin.security.UserPrincipal;
 import ru.podkovyrov.denis.routiin.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.podkovyrov.denis.routiin.controller.api.v1.ControllerConstants.API_VERSION;
@@ -35,8 +36,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userService.findAll();
+    public List<UserMeResponse> getAllUsers(){
+        List<UserMeResponse> users = new ArrayList<>();
+        for (User user : userService.findAll()) {
+            users.add(new UserMeResponse(user));
+        }
+        return users;
     }
 
     @GetMapping("/user/{id}")
