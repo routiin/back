@@ -37,12 +37,6 @@ public class CardController {
         this.scoreService = scoreService;
     }
 
-    @GetMapping("user/{id}/card")
-    public List<Card> getUsersCardById(@PathVariable(name = "id") User user){
-        // Возвращать CardResponse
-        return cardService.findAllUserCards(user);
-    }
-
     @PostMapping("user/me/cards/from/interval")
     @PreAuthorize("hasRole('USER')")
     public List<CardResponse> getMeCardsFromInterval(@CurrentUser UserPrincipal userPrincipal,
@@ -89,5 +83,13 @@ public class CardController {
 
         return ResponseEntity.ok()
                 .body(new ApiResponse(true, "You create a card"));
+    }
+
+    @PostMapping("user/me/card/{id}/check")
+    @PreAuthorize("hasRole('USER')")
+    public void setDay(@CurrentUser UserPrincipal userPrincipal,
+                       @PathVariable(name = "id") Card card,
+                       @RequestBody DayTimeRequest day){
+        dayService.checkDay(userRepository.findById(userPrincipal.getId()).get(),card, day.getDate());
     }
 }
