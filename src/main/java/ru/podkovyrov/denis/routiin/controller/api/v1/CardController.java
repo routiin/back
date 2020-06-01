@@ -47,6 +47,7 @@ public class CardController {
                     throw new ResourceNotFoundException("User", "id" ,userPrincipal.getId());
                 });
 
+        System.out.println(interval.getFrom() + " " + interval.getTo());
         return dayService.findAllByUserAndDateBetween(user, interval.getFrom(), interval.getTo());
     }
 

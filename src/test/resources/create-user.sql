@@ -1,4 +1,4 @@
-delete from USER;
+delete from user;
 
 insert into user(id, login, email, first_name, last_name, image_url, score, provider, provider_id, status) values
 (1, "Frodo", "fr@email.com", "Frodo", "F", "image", 20, "local", "0", "ACTIVE" );
